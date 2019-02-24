@@ -42,8 +42,3 @@ action "Execute" {
   secrets = ["GITHUB_TOKEN"]
 }
 ```
-
-
-## Secrets
-
-In your project don't forget to add the secret.
