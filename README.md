@@ -34,7 +34,8 @@ action "Upload to releases" {
   uses = "skx/github-action-publish-binaries@master"
   args = "puppet-summary*"
   secrets = ["GITHUB_TOKEN"]
-}```
+}
+```
 
 
 ## Secrets
