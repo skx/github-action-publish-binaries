@@ -29,10 +29,16 @@ Here we assume `.github/build` was executed, and generated files such as:
 The result should be that those binaries are uploaded:
 
 ```
+# pushes
+workflow "Handle Release" {
+  on = "release"
+  resolves = ["Execute"]
+}
+
 # Run the magic
-action "Upload to releases" {
+action "Execute" {
   uses = "skx/github-action-publish-binaries@master"
-  args = "puppet-summary*"
+  args = "puppet-summary-*"
   secrets = ["GITHUB_TOKEN"]
 }
 ```
