@@ -11,7 +11,7 @@ LABEL homepage="http://github.com/skx/github-action-publish-binaries"
 LABEL maintainer="Steve Kemp <steve@steve.fi>"
 
 RUN apt-get update
-RUN apt-get install --yes
+RUN apt-get install --yes \
   ca-certificates \
   curl \
   jq
