@@ -6,9 +6,9 @@
 # show releases
 set -e
 
-# Ensure that the GITHUB_TOKEN secret is included
-if [[ -z "$GITHUB_TOKEN" ]]; then
-  echo "Set the GITHUB_TOKEN env variable."
+# Ensure that the GITHUB_SECRET_TOKEN secret is included
+if [[ -z "$GITHUB_SECRET_TOKEN" ]]; then
+  echo "Set the GITHUB_SECRET_TOKEN env variable."
   exit 1
 fi
 
@@ -35,7 +35,7 @@ else
 fi
 
 # Prepare the headers
-AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
+AUTH_HEADER="Authorization: token ${GITHUB_SECRET_TOKEN}"
 
 # Build the Upload URL from the various pieces
 RELEASE_ID=$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)
