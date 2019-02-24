@@ -55,5 +55,6 @@ for file in $*; do
         -XPOST \
         -H "${AUTH_HEADER}" \
         --upload-file "${file}" \
+        --header "Content-Type:application/octet-stream" \
         "${UPLOAD_URL}"
 done
