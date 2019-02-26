@@ -20,6 +20,7 @@ There are two steps to enable this action:
 * Create the shell-script `.github/build` in your repository.
   * This is the script which will be invoked to run your build.
   * It should install any dependencies, and produce the binaries.
+    * The container is Debian-derived so use `apt-get` as appropriate, you'll find the latest version of `go` is pre-installed as I use that the most.
 
 
 ## Sample Configuration
