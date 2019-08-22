@@ -2,16 +2,15 @@
 
 This repository contains a simple GitHub Action implementation, which allows you to attach binaries to a new release.
 
-There are two steps to using this action:
 
 ## Enabling the action
 
 There are two steps required to use this action:
 
 * Enable the action inside your repository.
-  * This will mean creating a file `.github/workflows/release.yml`.
+  * This will mean creating a file `.github/workflows/release.yml` which is where the action is invoked, specifying a pattern to describe which binary-artifacts are uploaded.
 * Add your project-specific `.github/build` script.
-  * This is the script which will generate the binaries this action will upload.
+  * This is the script which will generate the files this action will upload.
     * A C-project might just run `make`.
     * A golang-based project might run `go build .` multiple times for different architectures.
 
@@ -26,7 +25,7 @@ on: release
 name: Handle Release
 jobs:
   upload:
-    name: Upload
+    name: Upload Artifacts
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
