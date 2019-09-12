@@ -25,15 +25,6 @@ if [ "$IS_DRAFT" = true ]; then
   exit 0
 fi
 
-# Run the build-script
-if [ -e .github/build ]; then
-    chmod 755 .github/build
-    ./.github/build
-else
-    echo "Missing build-script!"
-    exit 1
-fi
-
 # Prepare the headers
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 
