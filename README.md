@@ -5,14 +5,7 @@ This repository contains a simple GitHub Action implementation, which allows you
 
 ## Enabling the action
 
-There are two steps required to use this action:
-
-* Enable the action inside your repository.
-  * This will mean creating a file `.github/workflows/release.yml` which is where the action is invoked, specifying a pattern to describe which binary-artifacts are uploaded.
-* Add your project-specific `.github/build` script.
-  * This is the script which will generate the files this action will upload.
-    * A C-project might just run `make`.
-    * A golang-based project might run `go build .` multiple times for different architectures.
+Enable the action inside your repository by creating a file `.github/workflows/release.yml` which is where the action is invoked, specifying a pattern to describe which binary-artifacts are uploaded.
 
 
 ## Sample Configuration
@@ -37,7 +30,7 @@ jobs:
         args: 'puppet-summary-*'
 ```
 
-We assume that the `.github/build` script generated suitable binaries.  For example a go-based project might create files like this using cross-compilation:
+We assume that the binaries are already created.  For example a go-based project might create files like this using cross-compilation:
 
 * `puppet-summary-linux-i386`
 * `puppet-summary-linux-amd64`
