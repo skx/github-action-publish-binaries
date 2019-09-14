@@ -25,10 +25,27 @@ if [ "$IS_DRAFT" = true ]; then
   exit 0
 fi
 
-# Run the build-script
+# Is there a build-script in the repository?
 if [ -e .github/build ]; then
-    chmod 755 .github/build
-    ./.github/build
+
+    # Have we found any artifacts?
+    found=
+    for file in $*; do
+        if [ -e "$file" ]; then
+            found=1
+        fi
+    done
+
+    # OK if we have no artifacts already present, so we should
+    # invoke the build-script, which we have confirmed exists.
+    if [ -z "${found}" ]; then
+        echo "Artifacts are missing, but build-script is present."
+        echo "Building.."
+        chmod 755 .github/build
+        ./.github/build
+    else
+        echo "Artifacts are already present, so not running the build-step"
+    fi
 fi
 
 # Prepare the headers

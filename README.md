@@ -1,6 +1,6 @@
 # GitHub Action for Uploading Release Artifacts
 
-This repository contains a simple GitHub Action implementation, which allows you to attach binaries to a new release.
+This repository contains a simple GitHub Action implementation, which allows you to attach binaries to a new (github) release of your repository.
 
 
 ## Enabling the action
@@ -8,17 +8,60 @@ This repository contains a simple GitHub Action implementation, which allows you
 There are two steps required to use this action:
 
 * Enable the action inside your repository.
-  * This will mean creating a file `.github/workflows/release.yml` which is where the action is invoked, specifying a pattern to describe which binary-artifacts are uploaded.
-* Add your project-specific `.github/build` script.
-  * This is the script which will generate the files this action will upload.
-    * A C-project might just run `make`.
-    * A golang-based project might run `go build .` multiple times for different architectures.
+  * This will mean creating a file `.github/workflows/release.yml` which is where the action is invoked.
+  * You'll specify a pattern to describe which binary-artifacts are uploaded.
+* Ensure your binary artifacts are generated.
+  * Ideally you should do this in your workflow using another action.
+  * But if you're in a hurry you can add a project-specific `.github/build` script.
+
+## Sample Configuration: Preferred
+
+The following configuration file uses this action, along with another to build a project.
+
+This is the preferred approach:
+
+```
+on: release
+name: Handle Release
+jobs:
+  generate:
+    name: Create release-artifacts
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@master
+      - name: Generate artifacts
+        uses: skx/github-action-build@master
+      - name: Upload artifacts
+        uses: skx/github-action-publish-binaries@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: 'example-*'
+```
+
+This is the preferred approach because it uses a pair of distinct actions,
+each having one job:
+
+* [skx/github-action-build](https://github.com/skx/github-action-build/)
+  * Generates the build artifacts.
+  * i.e. Compiles your binaries.
+* [skx/github-action-publis-binaries](https://github.com/skx/github-action-publis-binaries)
+  * Uploads the previously-generated the build artifacts.
 
 
-## Sample Configuration
+## Sample Configuration: Legacy
 
-This configuration uploads any file in your repository which matches the
-shell-pattern `puppet-summary-*`, and is defined in the file `.github/workflows/release.yml`:
+In the past this action performed __both__ steps:
+
+* Generated the artifacts
+* Uploaded the artifacts
+
+That is still possible, but will be removed when actions come out of beta.
+
+For the moment you can continue to work as you did before, add the script `.github/build` to your repository, and configure this action with a pattern of files to upload.
+
+For example the following usage, defined in `.github/workflows/release.yml`, uploads files matching the pattern `puppet-summary-*`.
 
 ```
 on: release
