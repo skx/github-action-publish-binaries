@@ -46,7 +46,7 @@ each having one job:
 * [skx/github-action-build](https://github.com/skx/github-action-build/)
   * Generates the build artifacts.
   * i.e. Compiles your binaries.
-* [skx/github-action-publis-binaries](https://github.com/skx/github-action-publis-binaries)
+* [skx/github-action-publish-binaries](https://github.com/skx/github-action-publish-binaries)
   * Uploads the previously-generated the build artifacts.
 
 
