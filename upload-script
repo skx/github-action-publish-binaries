@@ -29,9 +29,6 @@ fi
 if [ -e .github/build ]; then
     chmod 755 .github/build
     ./.github/build
-else
-    echo "Missing build-script!"
-    exit 1
 fi
 
 # Prepare the headers
