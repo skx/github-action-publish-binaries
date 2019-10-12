@@ -3,7 +3,6 @@
 # Upload binary artifacts when a new release is made.
 #
 
-# show releases
 set -e
 
 # Ensure that the GITHUB_TOKEN secret is included
@@ -12,7 +11,7 @@ if [[ -z "$GITHUB_TOKEN" ]]; then
   exit 1
 fi
 
-# Ensure that the file path is present
+# Ensure that there is a pattern specified.
 if [[ -z "$1" ]]; then
   echo "Missing file (pattern) to upload."
   exit 1
@@ -21,11 +20,20 @@ fi
 # Only upload to non-draft releases
 IS_DRAFT=$(jq --raw-output '.release.draft' $GITHUB_EVENT_PATH)
 if [ "$IS_DRAFT" = true ]; then
-  echo "This is a draft, so nothing to do!"
-  exit 0
+    echo "**************************************************"
+    echo "  This is a draft-release, so we will do nothing"
+    echo "**************************************************"
+    exit 0
 fi
 
-# Is there a build-script in the repository?
+
+#
+# In the past we invoked a build-script to generate artifacts.
+#
+# Now we prefer to assume they are built alread.  However if
+# there is a (legacy) build-script present AND the artifacts
+# we expect to find are missing then we will invoke it.
+#
 if [ -e .github/build ]; then
 
     # Have we found any artifacts?
@@ -36,16 +44,29 @@ if [ -e .github/build ]; then
         fi
     done
 
-    # OK if we have no artifacts already present, so we should
-    # invoke the build-script, which we have confirmed exists.
+    #
+    # OK if we have no artifacts already present.
+    #
+    # Run the build-script.
+    #
     if [ -z "${found}" ]; then
-        echo "Artifacts are missing, but build-script is present."
-        echo "Building.."
+
+        echo "************************************************************"
+        echo " artifacts are missing, but a legacy build-script was found."
+        echo " launching build-script .."
+        echo "************************************************************"
+
         chmod 755 .github/build
         ./.github/build
+
+        echo "************************************************************"
+        echo " artifacts are missing, but a legacy build-script was found."
+        echo " build-script completed"
+        echo "************************************************************"
     else
-        echo "Artifacts are already present, so not running the build-step"
-    fi
+        echo "*****************************************************************"
+        echo " Artifacts are already present, skipping the legacy build-script."
+        echo "*****************************************************************"    fi
 fi
 
 # Prepare the headers
@@ -59,9 +80,25 @@ for file in $*; do
 
     echo "Processing file ${file}"
 
+    if [ ! -e "$file" ]; then
+        echo "*****************************"
+        echo " file not present - skipping."
+        echo "*****************************"
+        continue
+    fi
+
+    if [ -s "$file" ]; then
+        echo "**************************"
+        echo " file is empty - skipping."
+        echo "**************************"
+        continue
+    fi
+
+
     FILENAME=$(basename ${file})
+
     UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
-    echo "$UPLOAD_URL"
+    echo "Upload URL is ${UPLOAD_URL}"
 
     # Upload the file
     curl \
@@ -71,4 +108,14 @@ for file in $*; do
         --upload-file "${file}" \
         --header "Content-Type:application/octet-stream" \
         "${UPLOAD_URL}"
+
+    # If the curl-command returned a non-zero response we must abort
+    if [ "$?" -ne 0 ]; then
+        echo "**********************************"
+        echo " curl command did not return zero."
+        echo " Aborting"
+        echo "**********************************"
+        exit 1
+    fi
+
 done
