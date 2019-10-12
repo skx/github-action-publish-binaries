@@ -99,14 +99,17 @@ for file in $*; do
     UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
     echo "Upload URL is ${UPLOAD_URL}"
 
-    # Upload the file
+    # Generate a temporary file.
+    tmp=$(mktemp)
+
+    # Upload the file - capturing the output
     curl \
         -sSL \
         -XPOST \
         -H "${AUTH_HEADER}" \
         --upload-file "${file}" \
         --header "Content-Type:application/octet-stream" \
-        "${UPLOAD_URL}"
+        "${UPLOAD_URL}"  2>&1 > $tmp
 
     # If the curl-command returned a non-zero response we must abort
     if [ "$?" -ne 0 ]; then
@@ -114,7 +117,13 @@ for file in $*; do
         echo " curl command did not return zero."
         echo " Aborting"
         echo "**********************************"
+        cat $tmp
+        rm $tmp
         exit 1
     fi
+
+    # Show pretty output, since we already have jq
+    cat $tmp | jq .
+    rm $tmp
 
 done
