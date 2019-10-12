@@ -16,7 +16,7 @@ if [[ -z "$1" ]]; then
 fi
 
 # Only upload to non-draft releases
-IS_DRAFT=$(jq --raw-output '.release.draft' $GITHUB_EVENT_PATH)
+IS_DRAFT=$(jq --raw-output '.release.draft' "$GITHUB_EVENT_PATH")
 if [ "$IS_DRAFT" = true ]; then
     echo "**************************************************"
     echo "  This is a draft-release, so we will do nothing"
@@ -72,7 +72,7 @@ fi
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 
 # Build the Upload URL from the various pieces
-RELEASE_ID=$(jq --raw-output '.release.id' $GITHUB_EVENT_PATH)
+RELEASE_ID=$(jq --raw-output '.release.id' "$GITHUB_EVENT_PATH")
 
 # For each matching file
 for file in $*; do
@@ -94,7 +94,7 @@ for file in $*; do
     fi
 
 
-    FILENAME=$(basename ${file})
+    FILENAME=$(basename "${file}")
 
     UPLOAD_URL="https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${RELEASE_ID}/assets?name=${FILENAME}"
     echo "Upload URL is ${UPLOAD_URL}"
