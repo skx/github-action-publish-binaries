@@ -3,8 +3,6 @@
 # Upload binary artifacts when a new release is made.
 #
 
-set -e
-
 # Ensure that the GITHUB_TOKEN secret is included
 if [[ -z "$GITHUB_TOKEN" ]]; then
   echo "Set the GITHUB_TOKEN env variable."
