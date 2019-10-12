@@ -86,7 +86,7 @@ for file in $*; do
         continue
     fi
 
-    if [ -s "$file" ]; then
+    if [ ! -s "$file" ]; then
         echo "**************************"
         echo " file is empty - skipping."
         echo "**************************"
