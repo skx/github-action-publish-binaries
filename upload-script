@@ -103,18 +103,31 @@ for file in $*; do
     tmp=$(mktemp)
 
     # Upload the file - capturing the output
-    curl \
+    response=$(curl \
         -sSL \
         -XPOST \
         -H "${AUTH_HEADER}" \
         --upload-file "${file}" \
         --header "Content-Type:application/octet-stream" \
-        "${UPLOAD_URL}"  2>&1 > $tmp
+        --write-out "%{http_code}" \
+        --output $tmp \
+        "${UPLOAD_URL}")
 
     # If the curl-command returned a non-zero response we must abort
     if [ "$?" -ne 0 ]; then
         echo "**********************************"
         echo " curl command did not return zero."
+        echo " Aborting"
+        echo "**********************************"
+        cat $tmp
+        rm $tmp
+        exit 1
+    fi
+
+    # If upload is not successful, we must abort
+    if [ $response -ne 200 ]; then
+        echo "**********************************"
+        echo " upload was not successful."
         echo " Aborting"
         echo "**********************************"
         cat $tmp
