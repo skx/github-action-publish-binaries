@@ -28,7 +28,7 @@ fi
 #
 # In the past we invoked a build-script to generate artifacts.
 #
-# Now we prefer to assume they are built alread.  However if
+# Now we prefer to assume they are built already.  However if
 # there is a (legacy) build-script present AND the artifacts
 # we expect to find are missing then we will invoke it.
 #
@@ -43,9 +43,7 @@ if [ -e .github/build ]; then
     done
 
     #
-    # OK if we have no artifacts already present.
-    #
-    # Run the build-script.
+    # Run the build-script if we have no artifacts.
     #
     if [ -z "${found}" ]; then
 
@@ -58,7 +56,6 @@ if [ -e .github/build ]; then
         ./.github/build
 
         echo "************************************************************"
-        echo " artifacts are missing, but a legacy build-script was found."
         echo " build-script completed"
         echo "************************************************************"
     else
@@ -68,13 +65,13 @@ if [ -e .github/build ]; then
     fi
 fi
 
-# Prepare the headers
+# Prepare the headers for our curl-command.
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 
-# Build the Upload URL from the various pieces
+# Create the correct Upload URL.
 RELEASE_ID=$(jq --raw-output '.release.id' "$GITHUB_EVENT_PATH")
 
-# For each matching file
+# For each matching file..
 for file in $*; do
 
     echo "Processing file ${file}"
@@ -102,7 +99,7 @@ for file in $*; do
     # Generate a temporary file.
     tmp=$(mktemp)
 
-    # Upload the file - capturing the output
+    # Upload the artifact - capturing HTTP response-code in our output file.
     response=$(curl \
         -sSL \
         -XPOST \
@@ -126,10 +123,10 @@ for file in $*; do
 
     # If upload is not successful, we must abort
     if [ $response -ne 200 ]; then
-        echo "**********************************"
+        echo "***************************"
         echo " upload was not successful."
         echo " Aborting"
-        echo "**********************************"
+        echo "***************************"
         cat $tmp
         rm $tmp
         exit 1
