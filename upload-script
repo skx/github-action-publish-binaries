@@ -122,11 +122,12 @@ for file in $*; do
     fi
 
     # If upload is not successful, we must abort
-    if [ $response -ne 200 ]; then
+    if [ $response -ge 400 ]; then
         echo "***************************"
         echo " upload was not successful."
         echo " Aborting"
-        echo "***************************"
+        echo " HTTP status is $response"
+        echo "**********************************"
         cat $tmp
         rm $tmp
         exit 1
