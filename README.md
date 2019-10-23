@@ -1,6 +1,6 @@
 # GitHub Action for Uploading Release Artifacts
 
-This repository contains a simple GitHub Action implementation, which allows you to attach binaries to a new (github) release of your repository.
+This repository contains a simple GitHub Action implementation which allows you to attach binaries to a new (github) release of your repository.
 
 
 ## Enabling the action
@@ -13,6 +13,7 @@ There are two steps required to use this action:
 * Ensure your binary artifacts are generated.
   * Ideally you should do this in your workflow using another action.
   * But if you're in a hurry you can add a project-specific `.github/build` script.
+
 
 ## Sample Configuration: Preferred
 
@@ -40,14 +41,16 @@ jobs:
           args: 'example-*'
 ```
 
-This is the preferred approach because it uses a pair of distinct actions,
-each having one job:
+This is the preferred approach because it uses a pair of distinct actions, each having one job:
 
 * [skx/github-action-build](https://github.com/skx/github-action-build/)
   * Generates the build artifacts.
   * i.e. Compiles your binaries.
 * [skx/github-action-publish-binaries](https://github.com/skx/github-action-publish-binaries)
   * Uploads the previously-generated the build artifacts.
+
+**NOTE**: Please see the note about GITHUB_TOKEN later.
+
 
 
 ## Sample Configuration: Legacy
@@ -88,5 +91,12 @@ We assume that the `.github/build` script generated suitable binaries.  For exam
 * `puppet-summary-darwin-amd64`
 * ....
 
-The result should be that those binaries are uploaded shortly after you go to
-the Github UI and create a new release.
+
+**NOTE**: Please see the note about GITHUB_TOKEN later.
+
+
+## GITHUB_TOKEN
+
+Your workflow configuration file, named `.github/workflows/release.yml`, will contain a reference to `secrets.GITHUB_TOKEN`, however you do __not__ need to generate that, or update your project settings in any way.
+
+You _can_ inject secrets into workflows, defining them in the project settings, and referring to them by name, but the `GITHUB_TOKEN` value is special and it is handled transparently, requiring no manual setup.
