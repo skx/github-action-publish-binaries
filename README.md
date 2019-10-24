@@ -22,7 +22,9 @@ The following configuration file uses this action, along with another to build a
 This is the preferred approach:
 
 ```
-on: release
+on:
+  release:
+    types: [created]
 name: Handle Release
 jobs:
   generate:
@@ -67,7 +69,9 @@ For the moment you can continue to work as you did before, add the script `.gith
 For example the following usage, defined in `.github/workflows/release.yml`, uploads files matching the pattern `puppet-summary-*`.
 
 ```
-on: release
+on:
+  release:
+    types: [created]
 name: Handle Release
 jobs:
   upload:
