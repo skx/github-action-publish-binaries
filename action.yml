@@ -4,6 +4,12 @@ author: 'Steve Kemp'
 branding:
   icon: save
   color: black
+inputs:
+  args:
+    description: 'The pattern of files to upload'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
+  args:
+      - ${{ inputs.args }}
