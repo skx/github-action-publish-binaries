@@ -26,43 +26,38 @@ fi
 
 
 #
-# In the past we invoked a build-script to generate artifacts.
+# In the past we invoked a build-script to generate the artifacts
+# prior to uploading.
 #
-# Now we prefer to assume they are built already.  However if
-# there is a (legacy) build-script present AND the artifacts
-# we expect to find are missing then we will invoke it.
+# Now we no longer do so, they must exist before they are uploaded.
 #
-if [ -e .github/build ]; then
+# Test for them here.
+#
 
-    # Have we found any artifacts?
-    found=
-    for file in $*; do
-        if [ -e "$file" ]; then
-            found=1
-        fi
-    done
-
-    #
-    # Run the build-script if we have no artifacts.
-    #
-    if [ -z "${found}" ]; then
-
-        echo "************************************************************"
-        echo " artifacts are missing, but a legacy build-script was found."
-        echo " launching build-script .."
-        echo "************************************************************"
-
-        chmod 755 .github/build
-        ./.github/build
-
-        echo "************************************************************"
-        echo " build-script completed"
-        echo "************************************************************"
-    else
-        echo "*****************************************************************"
-        echo " Artifacts are already present, skipping the legacy build-script."
-        echo "*****************************************************************"
+# Have we found any artifacts?
+found=
+for file in $*; do
+    if [ -e "$file" ]; then
+        found=1
     fi
+done
+
+#
+# Abort if missing.
+#
+if [ -z "${found}" ]; then
+
+    echo "*****************************************************************"
+    echo " "
+    echo " Artifacts are missing, and this action no longer invokes the "
+    echo " legacy-build script."
+    echo " "
+    echo " Please see the README.md file for github-action-publish-binaries"
+    echo " which demonstrates how to build AND upload artifacts."
+    echo " "
+    echo "*****************************************************************"
+
+    exit 1
 fi
 
 # Prepare the headers for our curl-command.
@@ -77,9 +72,9 @@ for file in $*; do
     echo "Processing file ${file}"
 
     if [ ! -e "$file" ]; then
-        echo "*****************************"
-        echo " file not present - skipping."
-        echo "*****************************"
+        echo "***************************"
+        echo " file not found - skipping."
+        echo "***************************"
         continue
     fi
 
