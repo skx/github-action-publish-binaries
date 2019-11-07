@@ -15,15 +15,6 @@ if [[ -z "$1" ]]; then
     exit 1
 fi
 
-# Only upload to non-draft releases
-IS_DRAFT=$(jq --raw-output '.release.draft' "$GITHUB_EVENT_PATH")
-if [ "$IS_DRAFT" = true ]; then
-    echo "**************************************************"
-    echo "  This is a draft-release, so we will do nothing"
-    echo "**************************************************"
-    exit 0
-fi
-
 
 #
 # In the past we invoked a build-script to generate the artifacts
