@@ -15,7 +15,6 @@ if [[ -z "$1" ]]; then
     exit 1
 fi
 
-
 #
 # In the past we invoked a build-script to generate the artifacts
 # prior to uploading.
@@ -27,7 +26,7 @@ fi
 
 # Have we found any artifacts?
 found=
-for file in $*; do
+for file in $1; do
     if [ -e "$file" ]; then
         found=1
     fi
@@ -55,10 +54,15 @@ fi
 AUTH_HEADER="Authorization: token ${GITHUB_TOKEN}"
 
 # Create the correct Upload URL.
-RELEASE_ID=$(jq --raw-output '.release.id' "$GITHUB_EVENT_PATH")
+# If there is a release id provided then use that else use the event
+if [[ -n "$2" ]]; then
+    RELEASE_ID=$2
+else
+    RELEASE_ID=$(jq --raw-output '.release.id' "$GITHUB_EVENT_PATH")
+fi
 
 # For each matching file..
-for file in $*; do
+for file in $1; do
 
     echo "Processing file ${file}"
 

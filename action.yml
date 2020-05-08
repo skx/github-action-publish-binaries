@@ -8,8 +8,12 @@ inputs:
   args:
     description: 'The pattern of files to upload'
     required: true
+  releaseId:
+    description: 'The release Id of the release to be targeted.'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
       - ${{ inputs.args }}
+      - ${{ inputs.releaseId }}
