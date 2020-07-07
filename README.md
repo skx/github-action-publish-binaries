@@ -5,6 +5,7 @@ This repository contains a simple GitHub Action implementation which allows you 
 * [GitHub Action for Uploading Release Artifacts](#github-action-for-uploading-release-artifacts)
   * [Enabling the action](#enabling-the-action)
   * [Sample Configuration](#sample-configuration)
+  * [Advanced Configuration](#advanced-configuration)
   * [GITHUB_TOKEN](#github_token)
 
 
@@ -52,6 +53,33 @@ This is the preferred approach because it uses a pair of distinct actions, each 
   * i.e. Compiles your binaries.
 * [skx/github-action-publish-binaries](https://github.com/skx/github-action-publish-binaries)
   * Uploads the previously-generated the build artifacts.
+
+
+## Advanced Configuration
+
+This action is primarily intended to be invoked upon a release-event, which means that Github itself will create a new release, and the action will upload the specified artifacts to that release.
+
+However it might be that you wish to **create** a new release within an action, then modify it by populating the content and adding artifacts.   This is possible, because we allow you to specify the ID of the release to which your artifacts should be associated.
+
+You'll want to configure it using something like this:
+
+```
+  upload_artifacts:
+    name: Upload Artifacts
+    needs: [create_release]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload the artifacts
+        uses: skx/github-action-publish-binaries@release-1.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          releaseId: ${{ needs.create_release.outputs.id }}
+          args: '*.bin'
+```
+
+Here we're explicitly passing the `releaseId` variable, such that the specified release ID will be used.
+
 
 
 ## GITHUB_TOKEN
