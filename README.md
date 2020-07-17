@@ -63,7 +63,7 @@ However it might be that you wish to **create** a new release within an action, 
 
 You'll want to configure it using something like this:
 
-```
+```yml
   upload_artifacts:
     name: Upload Artifacts
     needs: [create_release]
