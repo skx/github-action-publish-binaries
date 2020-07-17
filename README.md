@@ -24,7 +24,7 @@ There are two steps required to use this action:
 
 The following configuration file uses _this_ action, along with the [github-action-build](https://github.com/skx/github-action-build) action to generate the artifacts for a project, then attach them to a release.
 
-```
+```yml
 on:
   release:
     types: [created]
