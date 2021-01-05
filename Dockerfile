@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM debian:buster
 
 LABEL "com.github.actions.name"="github-action-publish-binaries"
 LABEL "com.github.actions.description"="Upload artifacts when new releases are made"
@@ -10,11 +10,9 @@ LABEL repository="http://github.com/skx/github-action-publish-binaries"
 LABEL homepage="http://github.com/skx/github-action-publish-binaries"
 LABEL maintainer="Steve Kemp <steve@steve.fi>"
 
-RUN apt-get update
-RUN apt-get install --yes \
-  ca-certificates \
-  curl \
-  jq
+RUN apt-get update && \
+    apt-get install --yes ca-certificates curl jq && \
+    apt-get clean
 
 COPY upload-script /usr/bin/upload-script
 
