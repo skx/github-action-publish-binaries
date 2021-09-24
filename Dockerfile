@@ -12,7 +12,8 @@ LABEL maintainer="Steve Kemp <steve@steve.fi>"
 
 RUN apt-get update && \
     apt-get install --yes ca-certificates curl jq && \
-    apt-get clean
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY upload-script /usr/bin/upload-script
 
