@@ -1,4 +1,4 @@
-FROM debian:buster
+FROM debian:bullseye
 
 LABEL "com.github.actions.name"="github-action-publish-binaries"
 LABEL "com.github.actions.description"="Upload artifacts when new releases are made"
@@ -12,7 +12,8 @@ LABEL maintainer="Steve Kemp <steve@steve.fi>"
 
 RUN apt-get update && \
     apt-get install --yes ca-certificates curl jq && \
-    apt-get clean
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 COPY upload-script /usr/bin/upload-script
 
