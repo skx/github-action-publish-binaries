@@ -82,8 +82,10 @@ Here we're explicitly passing the `releaseId` variable, such that the specified 
 
 
 
-## GITHUB_TOKEN
+## `GITHUB_TOKEN`
 
-Your workflow configuration file, named `.github/workflows/release.yml`, will contain a reference to `secrets.GITHUB_TOKEN`, however you do __not__ need to generate that, or update your project settings in any way!
+Your workflow configuration file, named `.github/workflows/release.yml`, will contain a reference to `secrets.GITHUB_TOKEN`, however you do __not__ need to generate that as it is automatically created. You will however need to update your repository settings under `Actions -> General` to give the `GITHUB_TOKEN` write access to upload binaries to the release, without write access you will get a `403` response error.
+
+<img width="894" alt="image" src="https://user-images.githubusercontent.com/19007109/167677568-7c4c942f-b7a3-49af-9470-99605927b123.png">
 
 You _can_ inject secrets into workflows, defining them in the project settings, and referring to them by name, but the `GITHUB_TOKEN` value is special and it is handled transparently, requiring no manual setup.
